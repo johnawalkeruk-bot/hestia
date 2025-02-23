@@ -42,10 +42,24 @@
             list-style: none;
             padding: 0;
             width: 100%;
+            transition: margin-top 0.3s ease;
         }
         .sidebar ul li {
             margin: 10px 0;
+            position: relative;
+            transition: transform 0.3s ease;
         }
+
+        .sidebar ul li::after { 
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #333;
+        }
+
         .sidebar ul li a {
             color: #ffffff;
             text-decoration: none;
@@ -54,56 +68,77 @@
             padding: 8px 10px;
             transition: background 0.3s, color 0.3s;
         }
-        .sidebar ul li a:hover {
+
+        .sidebar ul li:not(.dropdown) > a:hover { 
             background: rgba(255, 255, 255, 0.1);
             color: #00bcd4;
         }
 
-        /* Styling for SOL counter */
-        #solCounter {
+        .sidebar ul li a:hover, .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00bcd4;
+        }
+
+        .dropdown {
+            display: none;
             position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: white;
-            color: black;
-            font-weight: 700;
-            font-size: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 5px;
+            top: 100%;
+            left: 0;
+            background: #1c1f2a;
+            width: 100%;
+            z-index: 1000;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .dropdown a {
+            display: block;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid #333;
+        }
+
+        .dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #00bcd4;
+        }
+
+        .show {
+            display: block;
         }
 
         .content {
             flex-grow: 1;
             padding: 30px;
             background: #1c1f2a;
-            margin-left: 270px; 
+            margin-left: 270px;
             overflow-y: auto;
         }
+
         .header {
             border-bottom: 2px solid #ffffff;
             padding-bottom: 10px;
             margin-bottom: 15px;
         }
+
         .header h1 {
             color: #ffffff;
             text-transform: uppercase;
             margin: 0;
         }
+
         .metadata {
             color: #bbbbbb;
             font-size: 1em;
         }
-        .section {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.1);
-            text-align: left;
-        }
 
-        /* Styles for crew activity log */
         .activity-log {
             background-color: rgba(255, 255, 255, 0.1);
             padding: 20px;
@@ -135,7 +170,6 @@
             font-weight: normal;
         }
 
-        /* Added styles for details and notes */
         .activity-log .details {
             margin-top: 5px;
             color: #bbbbbb;
@@ -148,16 +182,41 @@
             color: #999;
             font-size: 0.85em;
         }
+
+        #missionText {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .box {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: white;
+            color: black;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .box span {
+            display: inline-block;
+        }
+
+        #solCount {
+            font-size: 30px;
+        }
     </style>
 </head>
 <body>
-
-    <!-- Sidebar Section -->
     <div class="sidebar">
         <img src="logo.png" alt="NASA Logo">
         <h2>NAVIGATION</h2>
         <ul>
-            <li><a href="index.html">HOME</a></li>
+            <li><a href="hab.html">HOME</a></li>
             <li><a href="crew.html">CREW</a></li>
             <li>
                 <a href="#" id="reportsBtn">REPORTS <span id="arrow">▼</span></a>
@@ -173,14 +232,11 @@
         </ul>
     </div>
 
-    <!-- Main Content Section -->
     <div class="content">
         <div class="header">
             <h1>PROJECT HESTIA - THE HAB</h1>
             <p class="metadata">Mission Data Terminal</p>
         </div>
- <h2>CREW ACTIVITY LOG</h2>
-        <!-- Crew Activity Log Section -->
         <div class="activity-log">
             <h2>CREW ACTIVITY LOG</h2>
             <table>
@@ -198,25 +254,24 @@
                         <td>Mission Briefing - EVA Planning</td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="details">Briefing with crew regarding upcoming EVA for geological survey.</td>
+                        <td colspan="3" class="details">
+                            Briefing with crew regarding upcoming EVA for geological survey. Review of objectives, safety protocols, and contingency plans.
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="3" class="notes">All crew members briefed and prepared.</td>
                     </tr>
-
-                    <!-- More activities can be added here -->
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Sol Counter -->
-    <div id="solCounter">
+    <div id="missionText">MISSION DAY</div>
+    <div class="box">
         <span>SOL</span><span id="solCount"></span>
     </div>
 
     <script>
-        // Sol counter functionality
         function updateSolCount() {
             const startDate = new Date('2025-01-01');
             const today = new Date();
@@ -227,38 +282,31 @@
         updateSolCount();
         setInterval(updateSolCount, 86400000);
 
-        // Sidebar dropdown functionality
         document.addEventListener("DOMContentLoaded", function () {
-            const reportsBtn = document.getElementById("reportsBtn");
-            const reportsDropdown = document.getElementById("reportsDropdown");
-            const sidebarItems = document.querySelectorAll(".sidebar ul li");
-            const arrow = document.getElementById("arrow");
+            const links = document.querySelectorAll(".sidebar ul li a");
+            const sections = document.querySelectorAll(".section");
 
-            reportsBtn.addEventListener("click", function (event) {
-                event.preventDefault();
-                reportsDropdown.classList.toggle("show");
-
-                if (reportsDropdown.classList.contains("show")) {
-                    arrow.textContent = "▲";
-                } else {
-                    arrow.textContent = "▼";
-                }
-
-                sidebarItems.forEach((item, index) => {
-                    if (index > 2) {
-                        item.style.transform = reportsDropdown.classList.contains("show") ? 'translateY(40px)' : 'translateY(0)';
+            function updateActiveLink() {
+                let currentSection = "";
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    if (window.scrollY >= sectionTop) {
+                        currentSection = section.id;
                     }
                 });
-            });
 
-            document.addEventListener("click", function (event) {
-                if (!reportsBtn.contains(event.target) && !reportsDropdown.contains(event.target)) {
-                    reportsDropdown.classList.remove("show");
-                    arrow.textContent = "▼";
-                    sidebarItems.forEach(item => {
-                        item.style.transform = 'translateY(0)';
-                    });
-                }
+                links.forEach(link => {
+                    link.classList.remove("active");
+                    if (link.href.includes(currentSection)) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+
+            document.getElementById("reportsBtn").addEventListener("click", function () {
+                document.getElementById("reportsDropdown").classList.toggle("show");
+                const arrow = document.getElementById("arrow");
+                arrow.textContent = arrow.textContent === "▼" ? "▲" : "▼";
             });
         });
     </script>
