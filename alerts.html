@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Mission Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Source Code Pro', monospace;
+            background-color: #0b0f19;
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #1c1f2a;
+            padding: 20px;
+            border-right: 2px solid #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            align-items: center;
+        }
+
+        .sidebar img {
+            width: 120px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar h2 {
+            color: #00bcd4;
+            text-transform: uppercase;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            transition: margin-top 0.3s ease;
+        }
+
+        .sidebar ul li {
+            margin: 10px 0;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar ul li::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #333;
+        }
+
+        .sidebar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1em;
+            display: block;
+            padding: 8px 10px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .sidebar ul li:not(.dropdown) > a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00bcd4;
+        }
+
+        .sidebar ul li a:hover, .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00bcd4;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1c1f2a;
+            width: 100%;
+            z-index: 1000;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        .dropdown a {
+            display: block;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid #333;
+        }
+
+        .dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #00bcd4;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+            background: #1c1f2a;
+            margin-left: 270px;
+            overflow-y: auto;
+        }
+
+        .header {
+            border-bottom: 2px solid #ffffff;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .metadata {
+            color: #bbbbbb;
+            font-size: 1em;
+        }
+
+        .section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            text-align: left;
+        }
+
+        .activity-log {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .activity-log h2 {
+            color: #00bcd4;
+            margin-bottom: 10px;
+        }
+
+        .activity-log table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .activity-log th, .activity-log td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+            font-size: 0.9em;
+        }
+
+        .activity-log th {
+            color: #bbbbbb;
+            font-weight: normal;
+        }
+
+        .activity-log .details {
+            margin-top: 5px;
+            color: #bbbbbb;
+            font-size: 0.85em;
+        }
+
+        .activity-log .notes {
+            margin-top: 5px;
+            font-style: italic;
+            color: #999;
+            font-size: 0.85em;
+        }
+
+        .alert-container {
+            margin-top: 20px;
+            width: 100%; /* Make alerts container take full width */
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            width: calc(100% - 20px); /* Account for padding/margins */
+            box-sizing: border-box; /* Include padding in width calculation */
+            text-align: left; /* Align text to the left */
+        }
+
+        .alert-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .alert-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .alert-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .alert-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="logo.png" alt="NASA Logo">
+        <h2>NAVIGATION</h2>
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="crew.html">CREW</a></li>
+            <li>
+                <a href="#" id="reportsBtn">REPORTS <span id="arrow">▼</span></a>
+                <div class="dropdown" id="reportsDropdown">
+                    <a href="astro.html">Astrobiology Report</a>
+                    <a href="reports/report2.html">Geological Survey</a>
+                    <a href="reports/report3.html">Weather Log</a>
+                    <a href="reports/report4.html">Systems Check</a>
+                </div>
+            </li>
+            <li><a href="">ALERTS</a></li>
+            <li><a href="report3">SYSTEMS CHECK</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="header">
+            <h1>PROJECT HESTIA - THE HAB</h1>
+            <p class="metadata">Mission Data Terminal</p>
+        </div>
+        <div class="alert-container">
+            <div class="alert alert-warning">
+                Oxygen levels in Habitat Unit 2 are currently at 92%. A maintenance check is scheduled.
+            </div>
+            <div class="alert alert-danger">
+                Pressure fluctuation detected in the primary life support system. Investigating the cause.
+            </div>
+            <div class="alert alert-info">
+                Geological survey team has collected promising samples from the designated coordinates.
+            </div>
+            <div class="alert alert-success">
+                Communication link with Mission Control established successfully. Data transfer complete.
+            </div>
+            <div class="alert alert-warning">
+                Solar flare activity detected. Potential communication disruptions expected.
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+            const links = document.querySelectorAll(".sidebar ul li a");
+            const sections = document.querySelectorAll(".section"); // If you still use sections
+
+            function updateActiveLink() {
+                let currentSection = "";
+                sections.forEach(section => {  // Only if you use sections
+                    const sectionTop = section.offsetTop - 100;
+                    if (window.scrollY >= sectionTop) {
+                        currentSection = section.getAttribute("id");
+                    }
+                });
+
+                links.forEach(link => {
+                    link.classList.remove("active");
+                    const href = link.getAttribute("href");
+                    if (href && href.substring(1) === currentSection) { // Check if href exists
+                        link.classList.add("active");
+                    }
+                });
+            }
+
+            window.addEventListener("scroll", updateActiveLink);
+            updateActiveLink(); // Call initially to set active link on load
+
+
+            const reportsBtn = document.getElementById("reportsBtn");
+            const reportsDropdown = document.getElementById("reportsDropdown");
+            const sidebarItems = document.querySelectorAll(".sidebar ul li");
+            const arrow = document.getElementById("arrow");
+
+            reportsBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                reportsDropdown.classList.toggle("show");
+
+                arrow.textContent = reportsDropdown.classList.contains("show") ? "▲" : "▼";
+
+                sidebarItems.forEach((item, index) => {
+                    if (index > 2) { // Adjust index if needed
+                        item.style.transform = reportsDropdown.classList.contains("show") ? 'translateY(40px)' : 'translateY(0)';
+                    }
+                });
+            });
+
+            document.addEventListener("click", function (event) {
+                if (!reportsBtn.contains(event.target) && !reportsDropdown.contains(event.target)) {
+                    reportsDropdown.classList.remove("show");
+                    arrow.textContent = "▼";
+                    sidebarItems.forEach(item => {
+                        item.style.transform = 'translateY(0)';
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

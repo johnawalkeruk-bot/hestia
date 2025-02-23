@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Mission Report - Astrobiology Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+    body {
+        background: none;
+        color: black;
+        font-size: 10pt; /* Adjust for readability */
+    }
+    .container {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+        box-shadow: none;
+        border: none;
+    }
+    .header img {
+        width: 50px; /* Smaller logo */
+    }
+    .connection-status { 
+        display: none; /* Remove connection status */
+    }
+    .section, .weather-info, .comfortability, .contact-info {
+        page-break-before: avoid;
+    }
+    table {
+        font-size: 9pt;
+        width: 100%;
+    }
+    th, td {
+        padding: 4px;
+    }
+}
+        
+        
+        body {
+            font-family: 'Source Code Pro', monospace;
+            background-color: #0b0f19;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #1c1f2a;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            border: 2px solid #ffffff;
+            position: relative;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 2px solid #ffffff;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .header img {
+            width: 80px;
+            height: auto;
+            margin-right: 20px;
+        }
+        .header h1, .header h2 {
+            color: #ffffff;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        .header .submitted-by {
+            color: #00bcd4;
+            font-size: 1em;
+            margin-top: 5px;
+        }
+        .section {
+            margin-top: 20px;
+            border: 1px solid #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            text-align: left;
+        }
+        h1, h2 {
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #aaaaaa;
+        }
+        .metadata {
+            text-align: center;
+            font-size: 1em;
+            color: #bbbbbb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            border-radius: 8px;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ffffff;
+            text-align: center;
+        }
+        th {
+            background: rgba(255, 255, 255, 0.2);
+            color: #f3f3f3;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        tr:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        tr:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        td {
+            color: #dddddd;
+        }
+        .weather-info {
+            margin-top: 20px;
+            border-top: 2px solid #ffffff;
+            padding-top: 15px;
+        }
+        .weather-info h2 {
+            margin-top: 0;
+        }
+        .weather-info table {
+            margin-top: 10px;
+        }
+        .comfortability {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .comfortability h2 {
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .comfortability .indicator {
+            display: inline-block;
+            padding: 5px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .comfortability .good {
+            background-color: #28a745; /* Green */
+        }
+        .comfortability .neutral {
+            background-color: #ffc107; /* Yellow */
+        }
+        .comfortability .poor {
+            background-color: #dc3545; /* Red */
+        }
+        .stars {
+            font-size: 1.5em;
+            color: #ffffff;
+            margin-top: 10px;
+        }
+        .star {
+            padding: 0 5px;
+        }
+        .notes {
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            color: #dddddd;
+            text-align: left;
+            font-size: 1em;
+        }
+        .contact-info {
+            font-size: 0.8em;
+            color: #bbbbbb;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ffffff;
+        }
+        .report-number {
+            color: #00bcd4; /* Change this color for report number */
+            font-weight: bold;
+        }
+    </style>
+<script type='module' nonce='ibPqxjFQTvnX2hJWqgrlVg' src='https://mail-attachment.googleusercontent.com/Ml3YNqcVAsILFSwrgeuohtaBwyRr1F-_ot17g7i2Q-pSJZY1kZolt8H_e-bLFLVpmhMeeKyDY9BxnsmkLSnX0w=='></script></head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="NASA Logo">
+            <div>
+                <h1>NASA Mission Report</h1>
+                <h2>Astrobiology Analysis - Valles Marineris</h2>
+                <p class="submitted-by">Submitted by: Mira Jónsdóttir, Astrobiologist</p>
+                <p class="metadata"><strong>Report #:</strong> <span class="report-number">2025-AR-0225</span> | <strong>Version:</strong> 1.2 | <strong>Local Time:</strong> Sol 135, 14:27 MST</p>
+            </div>
+        </div>
+        <div class="section" id="summary">
+            <h2>Summary</h2>
+            <p>The mission team conducted an astrobiology field analysis. The main objective was to study potential biosignatures in regolith layers. The sample collection took place near the western ridge of Valles Marineris.</p>
+        </div>
+        <div class="section" id="findings">
+            <h2>Findings</h2>
+            <p>Initial analysis shows carbon compounds and minerals indicative of prebiotic chemistry. The samples suggest the presence of an ancient hydrothermal system.</p>
+        </div>
+        <div class="section" id="methodology">
+            <h2>Analysis Methodology</h2>
+            <p>The analysis involved spectroscopy, mass spectrometry, and microscopic examination of the samples to identify any microbial patterns or organic compounds.</p>
+        </div>
+
+        <!-- Mental Health Assessment -->
+        <div class="section" id="mental-health">
+            <h2>Mental Health Assessment</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Crew Member</th>
+                        <th>Assessment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mira Jónsdóttir</td>
+                        <td>Stable, focused, and optimistic. No major signs of stress.</td>
+                    </tr>
+                    <tr>
+                        <td>John Walker</td>
+                        <td>Occasional stress, but managing well. Some concerns regarding workload.</td>
+                    </tr>
+                    <!-- Add more crew members here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Comfortability Index -->
+        <div class="comfortability">
+            <h2>Comfortability Index</h2>
+            <p>Current comfortability levels based on current atmospheric and environmental data:</p>
+            <div class="indicator good">Good</div> <span>Temperatures: 22°C | Air Quality: Excellent</span>
+        </div>
+
+        <!-- Weather Information -->
+        <div class="weather-info">
+            <h2>Weather Conditions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Temperature</th>
+                        <th>Wind Speed</th>
+                        <th>Pressure</th>
+                        <th>Oxygen Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>-40°C</td>
+                        <td>25 km/h</td>
+                        <td>720 Pa</td>
+                        <td>20.1%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Data Table -->
+        <div class="section" id="data-table">
+            <h2>Data Summary</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sample ID</th>
+                        <th>Location</th>
+                        <th>Analysis</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AR-01</td>
+                        <td>Valles Marineris Ridge</td>
+                        <td>Carbon Compounds</td>
+                        <td>Positive</td>
+                    </tr>
+                    <tr>
+                        <td>AR-02</td>
+                        <td>Valles Marineris Basin</td>
+                        <td>Minerals</td>
+                        <td>Positive</td>
+                    </tr>
+                    <!-- Add more samples here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>End of Report | NASA - Valles Marineris Mission</p>
+            <div class="contact-info">
+                <p><strong>Contact:</strong> NASA Mission Support</p>
+                <p>Email: <a href="mailto:support@nasa.gov" style="color: #ffffff;">support@nasa.gov</a></p>
+                <p>Phone: +1-800-555-1234</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

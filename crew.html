@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Mission Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Source Code Pro', monospace;
+            background-color: #0b0f19;
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #1c1f2a;
+            padding: 20px;
+            border-right: 2px solid #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            align-items: center;
+        }
+        .sidebar img {
+            width: 120px;
+            margin-bottom: 10px;
+        }
+        .sidebar h2 {
+            color: #00bcd4;
+            text-transform: uppercase;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            transition: margin-top 0.3s ease;
+        }
+        .sidebar ul li {
+            margin: 10px 0;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar ul li::after { /* Separator line using ::after */
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #333;
+        }
+
+      /* ... other CSS ... */
+
+/* ... other CSS ... */
+
+.sidebar ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1em;
+    display: block;
+    padding: 8px 10px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.sidebar ul li:not(.dropdown) > a:hover { /* Hover for links NOT in dropdown */
+    background: rgba(255, 255, 255, 0.1);
+    color: #00bcd4;
+}
+
+/* ... rest of CSS ... */
+        }
+        .sidebar ul li a:hover, .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00bcd4;
+        }
+
+     .dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #1c1f2a; /* Same as sidebar background */
+    width: 100%; /* Match sidebar width exactly */
+    z-index: 1000;
+    border: none; /* Remove default border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    border-radius: 0; /* Optional: subtle rounded corners */
+    overflow: hidden; /* Prevents border radius clipping */
+}
+
+.dropdown a {
+    display: block; /* Make links fill the width */
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 15px; /* Adjust padding */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    border-bottom: 1px solid #333; /* Separator between dropdown items */
+}
+
+.dropdown a:last-child {
+    border-bottom: none; /* Remove separator from last item */
+}
+
+.dropdown a:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle hover background */
+    color: #00bcd4; /* Highlight color on hover */
+}
+        .show {
+            display: block;
+        }
+
+    .content {
+    flex-grow: 1;
+    padding: 30px;
+    background: #1c1f2a;
+    margin-left: 270px; /* Keep this for the sidebar spacing */
+    overflow-y: auto; /* Enable vertical scrolling */
+    /* Remove or reduce margin-bottom if needed */
+    /* margin-bottom: 20px; */ 
+}
+        .header {
+            border-bottom: 2px solid #ffffff;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            color: #ffffff;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        .metadata {
+            color: #bbbbbb;
+            font-size: 1em;
+        }
+        .section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            text-align: left;
+            height: 100%;
+        }
+
+ .crew-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .crew-member {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .crew-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .crew-member h3 {
+            color: #00bcd4;
+            margin-bottom: 5px;
+        }
+
+        .crew-member p {
+            color: #bbbbbb;
+        }
+
+        .crew-member .details {
+            text-align: left;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="logo.png" alt="NASA Logo">
+        <h2>NAVIGATION</h2>
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="crew.html">CREW</a></li>
+            <li>
+                <a href="#" id="reportsBtn">REPORTS <span id="arrow">▼</span></a>
+                <div class="dropdown" id="reportsDropdown">
+                    <a href="astro.html">Astrobiology Report</a>
+                    <a href="reports/report2.html">Geological Survey</a>
+                    <a href="reports/report3.html">Weather Log</a>
+                    <a href="reports/report4.html">Systems Check</a>
+                </div>
+            </li>
+            <li><a href="alerts.html">ALERTS</a></li>
+            <li><a href="report3">SYSTEMS CHECK</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="header">
+          <h1>CREW DETAILS</h1>
+            <p class="metadata">Meet the Hestia crew</p>
+        </div>
+
+        <div class="crew-container">
+            <div class="crew-member">
+                <img src="images/john.png" alt="John Walker">
+                <h3>Commander John Walker</h3>
+                <hr>
+                <p>Mission Commander</p>
+                <div class="details">
+                    <p>Age: 25</p>
+                    <p>Origin: United Kingdom</p>
+                    <p>Background: Former military officer turned astronaut, experienced in leadership, survival, and crisis management. As the commander, you oversee the mission's operations and ensure the safety and coordination of the crew.</p>
+                </div>
+            </div>
+
+            <div class="crew-member">
+                <img src="images/tessa.jpeg" alt="Tessa Carrington">
+                <h3>Tessa Carrington</h3>
+                <hr>
+                <p>Mission Specialist</p>
+                <div class="details">
+                    <p>Age: 30</p>
+                    <p>Origin: United States</p>
+                    <p>Background: Aerospace engineer with a focus on spacecraft systems, previously worked in NASA mission planning. Tessa was instrumental in designing the HAB's systems and plays a key role in maintaining its functionality.</p>
+                </div>
+            </div>
+
+            <div class="crew-member">
+                <img src="images/robyn.jpeg" alt="Robyn Martinez">
+                <h3>Robyn Martinez</h3>
+                <hr>
+                <p>Geologist & Planetary Scientist</p>
+                <div class="details">
+                    <p>Age: 28</p>
+                    <p>Origin: United States</p>
+                    <p>Background: Grew up in the American Southwest and studied Martian analog sites. Robyn's work involves researching the Martian landscape and geological features. She's passionate about planetary exploration and plays a crucial role in field research.</p>
+                </div>
+            </div>
+
+            <div class="crew-member">
+                <img src="images/harrison.jpeg" alt="Harrison Blake">
+                <h3>Harrison Blake</h3>
+                <hr>
+                <p>Engineer & Systems Operator</p>
+                <div class="details">
+                    <p>Age: 32</p>
+                    <p>Origin: United Kingdom</p>
+                    <p>Background: Coming from a family of mechanics, Harrison has vast experience working on the ISS and is skilled in spacecraft systems. He is responsible for ensuring that all mechanical systems on Mars remain operational and secure.</p>
+                </div>
+            </div>
+
+            <div class="crew-member">
+                <img src="images/larissa.jpeg" alt="Larisa Volkov">
+                <h3>Larisa Volkov</h3>
+                <hr>
+                <p>Medical Officer</p>
+                <div class="details">
+                    <p>Age: 34</p>
+                    <p>Origin: Russia</p>
+                    <p>Background: A trauma surgeon who has worked in combat zones and disaster relief, Larisa is now focused on space medicine. She is responsible for the health and well-being of the crew, conducting medical research, and handling emergencies.</p>
+                </div>
+            </div>
+
+            <div class="crew-member">
+                <img src="images/eli.jpeg" alt="Eli Foster">
+                <h3>Eli Foster</h3>
+                <hr>
+                <p>Communications & Data Specialist</p>
+                <div class="details">
+                    <p>Age: 27</p>
+                    <p>Origin: Australia</p>
+                    <p>Background: Former radio astronomer and satellite technician, Eli specializes in maintaining communication with Earth and managing the crew's data and research transmissions. Eli is responsible for overseeing data collection and supporting scientific research.</p>
+                </div>
+            </div>
+
+            <div class="crew-member">
+                <img src="images/sofia.jpeg" alt="Sofia Alvarez">
+                <h3>Sofia Alvarez</h3>
+                <hr>
+                <p>Botanist & Life Support Specialist</p>
+                <div class="details">
+                    <p>Age: 29</p>
+                    <p>Origin: Spain</p>
+                    <p>Background: Sofia grew up on a vineyard in Spain and later studied astrobotany at MIT. She is focused on food sustainability on Mars and works on growing plants in the habitat to support the crew's life support systems.</p>
+                </div>
+            </div>
+
+            <div class="crew-member">
+                <img src="images/adam.jpeg" alt="Adam Reyes">
+                <h3>Adam Reyes</h3>
+                <hr>
+                <p>Security & Logistics Officer</p>
+                <div class="details">
+                    <p>Age: 31</p>
+                    <p>Origin: United States</p>
+                    <p>Background: A former special forces operative, Adam is responsible for security and crisis management on the station. He handles logistical support, ensures the safety of the crew, and responds to emergencies, both within the HAB and on missions.</p>
+                </div>
+            </div>
+
+            <div class="crew-member">
+                <img src="images/mira.png" alt="Mira Jónsdóttir">
+                <h3>Mira Jónsdóttir</h3>
+                <hr>
+                <p>Astrobiologist</p>
+                <div class="details">
+                    <p>Age: 26</p>
+                    <p>Origin: Iceland</p>
+                    <p>Background: Mira is an expert in extremophiles and has studied life in extreme environments like deep-sea vents and deserts. She is highly motivated to find evidence of Martian life and is a key player in astrobiological research on the mission.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+      
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const links = document.querySelectorAll(".sidebar ul li a");
+            const sections = document.querySelectorAll(".section");
+
+            function updateActiveLink() {
+                let currentSection = "";
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    if (window.scrollY >= sectionTop) {
+                        currentSection = section.getAttribute("id");
+                    }
+                });
+
+                links.forEach(link => {
+                    link.classList.remove("active");
+                    if (link.getAttribute("href").substring(1) === currentSection) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+
+            window.addEventListener("scroll", updateActiveLink);
+            updateActiveLink();
+
+            const reportsBtn = document.getElementById("reportsBtn");
+            const reportsDropdown = document.getElementById("reportsDropdown");
+            const sidebarItems = document.querySelectorAll(".sidebar ul li");
+            const arrow = document.getElementById("arrow");
+
+            reportsBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                reportsDropdown.classList.toggle("show");
+
+                if (reportsDropdown.classList.contains("show")) {
+                    arrow.textContent = "▲";
+                } else {
+                    arrow.textContent = "▼";
+                }
+
+                sidebarItems.forEach((item, index) => {
+                    if (index > 2) {
+                        item.style.transform = reportsDropdown.classList.contains("show") ? 'translateY(40px)' : 'translateY(0)';
+                    }
+                });
+            });
+
+            document.addEventListener("click", function (event) {
+                if (!reportsBtn.contains(event.target) && !reportsDropdown.contains(event.target)) {
+                    reportsDropdown.classList.remove("show");
+                    arrow.textContent = "▼";
+                    sidebarItems.forEach(item => {
+                        item.style.transform = 'translateY(0)';
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

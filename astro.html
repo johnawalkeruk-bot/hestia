@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Mission Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Source Code Pro', monospace;
+            background-color: #0b0f19;
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #1c1f2a;
+            padding: 20px;
+            border-right: 2px solid #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            align-items: center;
+        }
+        .sidebar img {
+            width: 120px;
+            margin-bottom: 10px;
+        }
+        .sidebar h2 {
+            color: #00bcd4;
+            text-transform: uppercase;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            transition: margin-top 0.3s ease;
+        }
+        .sidebar ul li {
+            margin: 10px 0;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar ul li::after { /* Separator line using ::after */
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #333;
+        }
+
+        .sidebar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1em;
+            display: block;
+            padding: 8px 10px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .sidebar ul li:not(.dropdown) > a:hover { /* Hover for links NOT in dropdown */
+            background: rgba(255, 255, 255, 0.1);
+            color: #00bcd4;
+        }
+
+        .sidebar ul li a:hover, .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00bcd4;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1c1f2a; /* Same as sidebar background */
+            width: 100%; /* Match sidebar width exactly */
+            z-index: 1000;
+            border: none; /* Remove default border */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            border-radius: 0; /* Optional: subtle rounded corners */
+            overflow: hidden; /* Prevents border radius clipping */
+        }
+
+        .dropdown a {
+            display: block; /* Make links fill the width */
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 15px; /* Adjust padding */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+            border-bottom: 1px solid #333; /* Separator between dropdown items */
+        }
+
+        .dropdown a:last-child {
+            border-bottom: none; /* Remove separator from last item */
+        }
+
+        .dropdown a:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle hover background */
+            color: #00bcd4; /* Highlight color on hover */
+        }
+
+        .show {
+            display: block;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+            background: #1c1f2a;
+            margin-left: 270px; /* Keep this for the sidebar spacing */
+            overflow-y: auto;
+        }
+
+        .header {
+            border-bottom: 2px solid #ffffff;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .metadata {
+            color: #bbbbbb;
+            font-size: 1em;
+        }
+
+        .section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            text-align: left;
+        }
+
+        .report-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .report-section h2 {
+            color: #00bcd4;
+            margin-bottom: 10px;
+        }
+
+        .report-section img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Prevents image from creating extra space below */
+            margin: 10px auto; /* Centers the image */
+        }
+
+        .report-section table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        .report-section th, .report-section td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        .report-section th {
+            color: #00bcd4;
+            font-weight: bold;
+        }
+
+        /* Styles for the crew activity log */
+        .activity-log {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .activity-log h2 {
+            color: #00bcd4;
+            margin-bottom: 10px;
+        }
+
+        .activity-log table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .activity-log th, .activity-log td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+            font-size: 0.9em;
+        }
+
+        .activity-log th {
+            color: #bbbbbb;
+            font-weight: normal;
+        }
+
+        .activity-log .details {
+            margin-top: 5px;
+            color: #bbbbbb;
+            font-size: 0.85em;
+        }
+
+        .activity-log .notes {
+            margin-top: 5px;
+            font-style: italic;
+            color: #999;
+            font-size: 0.85em;
+        }
+          canvas {
+            width: 80% !important;
+            height: 400px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="logo.png" alt="NASA Logo">
+        <h2>NAVIGATION</h2>
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="crew.html">CREW</a></li>
+            <li>
+                <a href="#" id="reportsBtn">REPORTS <span id="arrow">▼</span></a>
+                <div class="dropdown" id="reportsDropdown">
+                    <a href="astro.html">Astrobiology Report</a>
+                    <a href="reports/report2.html">Geological Survey</a>
+                    <a href="alerts.html">Alerts</a>
+                    <a href="reports/report4.html">Systems Check</a>
+                </div>
+            </li>
+            <li><a href="alerts.html">ALERTS</a></li>
+            <li><a href="report3">SYSTEMS CHECK</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="header">
+            <h1>PROJECT HESTIA - THE HAB</h1>
+            <p class="metadata">Mission Data Terminal</p>
+        </div>
+       
+        <div class="report-section" id="astrobiologyReport">
+            <h2>Astrobiology Report</h2>
+
+            <p><strong>Executive Summary:</strong> Preliminary analysis of Martian soil samples collected from designated coordinates indicates the presence of complex organic molecules. While no definitive signs of extant life have been observed, these findings suggest that conditions on Mars may have been conducive to the development of life in the past.</p>
+
+            <!-- Replace this image with your own -->
+            <img src="mars.png" alt="Image related to Astrobiology Report">
+              <canvas id="concentrationChart"></canvas>
+
+    <script>
+       
+    const ctx = document.getElementById('concentrationChart').getContext('2d');
+
+    // Data for concentrations over time (Sol 1 to Sol 20)
+    const solLabels = Array.from({ length: 20 }, (_, i) => `Sol ${i + 1}`);
+    
+    const data = {
+        labels: solLabels,
+        datasets: [
+            {
+                label: 'Methane (CH₄)',
+                data: [4.8, 4.5, 4.6, 4.9, 5.1, 5.3, 5.4, 5.7, 5.9, 6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.7, 6.9, 7.0, 7.1, 7.3], // Random fluctuations
+                borderColor: 'rgba(255, 99, 132, 1)',
+                tension: 0.1
+            },
+            {
+                label: 'Amino Acids (Glycine, Alanine)',
+                data: [3.2, 3.4, 3.5, 3.6, 3.7, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5.0, 5.1, 5.2, 5.3], // Gradual increase
+                borderColor: 'rgba(54, 162, 235, 1)',
+                tension: 0.1
+            },
+            {
+                label: 'Acetic Acid (CH₃COOH)',
+                data: [1.1, 1.2, 1.3, 1.4, 1.6, 1.8, 1.9, 2.0, 2.1, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7], // Steady rise
+                borderColor: 'rgba(255, 159, 64, 1)',
+                tension: 0.1
+            },
+            {
+                label: 'Formic Acid (HCOOH)',
+                data: [0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6], // Gradual increase
+                borderColor: 'rgba(75, 192, 192, 1)',
+                tension: 0.1
+            },
+            {
+                label: 'Benzene (C₆H₆)',
+                data: [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5], // Moderate increase
+                borderColor: 'rgba(153, 102, 255, 1)',
+                tension: 0.1
+            },
+            {
+                label: 'Iron Oxides (Fe₂O₃)',
+                data: [12.7, 13.0, 13.2, 13.4, 13.6, 13.8, 14.0, 14.1, 14.3, 14.5, 14.7, 14.9, 15.0, 15.2, 15.3, 15.5, 15.7, 15.9, 16.0, 16.2], // Stable trend
+                borderColor: 'rgba(255, 99, 132, 0.2)',
+                tension: 0.1
+            }
+        ]
+    };
+
+    const config = {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: 'white' // Set legend text color to white
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    bodyColor: 'white' // Set tooltip text color to white
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false,
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Sols (Days)',
+                        color: 'white' // Set x-axis title color to white
+                    },
+                    ticks: {
+                        color: 'white' // Set x-axis tick color to white
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Concentration (ppm)',
+                        color: 'white' // Set y-axis title color to white
+                    },
+                    ticks: {
+                        color: 'white' // Set y-axis tick color to white
+                    }
+                }
+            }
+        }
+    };
+
+    const concentrationChart = new Chart(ctx, config);
+</script>
+
+   
+
+            <p><strong>Organic Molecule Concentration:</strong> The concentration of organic molecules detected in sample A-7 is significantly higher than in other samples, suggesting a potential hotspot for further investigation. The molecules identified include methane, benzene, and several amino acids.</p>
+
+        <p>The data presented in the graph tracks the concentrations of various organic molecules over a 20-day period (Sol 1 to Sol 20) on Mars. Methane (CH₄) shows a gradual increase, starting at 4.8 ppm and rising to 7.3 ppm. Amino acids, including glycine and alanine, also demonstrate a steady upward trend, increasing from 3.2 ppm to 5.3 ppm. Acetic acid (CH₃COOH) and formic acid (HCOOH) follow a similar trajectory, with concentrations gradually climbing from 1.1 ppm to 3.7 ppm and 0.7 ppm to 2.6 ppm, respectively. Benzene (C₆H₆) exhibits a moderate increase, starting at 0.4 ppm and reaching 2.5 ppm. Iron oxides (Fe₂O₃) remain stable, hovering around 12.7 ppm to 16.2 ppm. This data suggests a consistent presence and gradual increase in organic molecules, with a particularly notable rise in methane and amino acids, indicating ongoing Martian chemical activity.</p>
+        </div>
+
+     
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const reportsBtn = document.getElementById('reportsBtn');
+            const reportsDropdown = document.getElementById('reportsDropdown');
+
+            reportsBtn.addEventListener('click', function () {
+                reportsDropdown.classList.toggle('show');
+                const arrow = document.getElementById('arrow');
+                arrow.textContent = reportsDropdown.classList.contains('show') ? '▲' : '▼';
+            });
+        });
+    </script>
+</body>
+</html>
